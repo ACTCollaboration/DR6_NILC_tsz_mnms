@@ -1,0 +1,8 @@
+run in this order:
+
+get_mnms_mask_obs.py
+get_mnms_diff.py
+get_mnms_spectra.py
+get_mnms_ivar.py
+get_mnms_models.py
+get_mnms_sims.py
