@@ -1,0 +1,48 @@
+#!/bin/bash
+#SBATCH --job-name=sim01
+#SBATCH --partition=gen
+#SBATCH --constraint=rome
+#SBATCH --nodes=1
+
+#SBATCH --ntasks-per-node=16
+#SBATCH --cpus-per-task=8
+
+#SBATCH --time=01:20:00
+
+export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
+
+module load adri_gcc
+module load adri_base
+
+source /mnt/home/aduivenvoorden/.pyenv/versions/enki/bin/activate
+
+TAG=sim01
+MNMSDIR="/mnt/home/aduivenvoorden/local/mnms/scripts"
+SIMDIR="/mnt/home/aduivenvoorden/project/actpol/maps/mnms/sims"
+
+CONFIG="act_dr6v4_nilc070123"
+SIMS_END=303
+
+NOISEMODEL="wav"
+QIDS="ilc_y"
+LMAX=10000
+
+srun -u --cpu-bind=cores -c $SLURM_CPUS_PER_TASK python ${MNMSDIR}/noise_sim.py --config-name ${CONFIG} --noise-model-name ${NOISEMODEL} --qid ${QIDS} --lmax ${LMAX} --use-mpi --maps-start 0 --maps-end ${SIMS_END}
+
+NOISEMODEL="tile"
+QIDS="ilc_y"
+LMAX=10000
+
+srun -u --cpu-bind=cores -c $SLURM_CPUS_PER_TASK python ${MNMSDIR}/noise_sim.py --config-name ${CONFIG} --noise-model-name ${NOISEMODEL} --qid ${QIDS} --lmax ${LMAX} --use-mpi --maps-start 0 --maps-end ${SIMS_END}
+
+NOISEMODEL="tile_planck"
+QIDS="ilc_y_planck"
+LMAX=4000
+
+srun -u --cpu-bind=cores -c $SLURM_CPUS_PER_TASK python ${MNMSDIR}/noise_sim.py --config-name ${CONFIG} --noise-model-name ${NOISEMODEL} --qid ${QIDS} --lmax ${LMAX} --use-mpi --maps-start 0 --maps-end ${SIMS_END}
+
+NOISEMODEL="wav_planck"
+QIDS="ilc_y_planck"
+LMAX=4000
+
+srun -u --cpu-bind=cores -c $SLURM_CPUS_PER_TASK python ${MNMSDIR}/noise_sim.py --config-name ${CONFIG} --noise-model-name ${NOISEMODEL} --qid ${QIDS} --lmax ${LMAX} --use-mpi --maps-start 0 --maps-end ${SIMS_END}
